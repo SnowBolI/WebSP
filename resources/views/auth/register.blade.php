@@ -46,6 +46,17 @@
             <x-input-error :messages="$errors->get('jabatan_id')" class="mt-2" />
         </div>
 
+        <!-- Form untuk Pemilihan Cabang -->
+        <div id="form-cabang" class="mt-4" style="display: none;">
+            <x-input-label for="cabang_id" :value="__('Cabang')" />
+            <select id="cabang_id" name="cabang_id" class="block mt-1 w-full dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                @foreach($cabangs as $cabang)
+                    <option value="{{ $cabang->id_cabang }}">{{ $cabang->nama_cabang }}</option>
+                @endforeach
+            </select>
+            <x-input-error :messages="$errors->get('cabang_id')" class="mt-2" />
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
@@ -56,4 +67,25 @@
             </x-primary-button>
         </div>
     </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#jabatan_id').change(function() {
+                var jabatanId = $(this).val();
+                // Sembunyikan form cabang terlebih dahulu
+                $('#form-cabang').hide();
+                // Tampilkan form cabang jika jabatan yang dipilih memerlukan pemilihan cabang
+                if (jabatanId == 2 || jabatanId == 3 || jabatanId == 4 || jabatanId == 5) {
+                    $('#form-cabang').show();
+                }
+            });
+
+            // Periksa jabatan saat halaman dimuat ulang
+            var currentJabatanId = $('#jabatan_id').val();
+            if (currentJabatanId == 2 || currentJabatanId == 3 || currentJabatanId == 4 || currentJabatanId == 5) {
+                $('#form-cabang').show();
+            }
+        });
+    </script>
 </x-guest-layout>
