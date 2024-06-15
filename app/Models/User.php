@@ -12,6 +12,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public function jabatan()
+{
+    return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id_jabatan');
+}
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,6 +33,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    
     protected $hidden = [
         'password',
         'remember_token',
