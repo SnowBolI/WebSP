@@ -19,24 +19,31 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
-
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
                             name="password"
                             required autocomplete="new-password" />
-
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                             type="password"
                             name="password_confirmation" required autocomplete="new-password" />
-
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
+
+        <!-- Jabatan -->
+        <div class="mt-4">
+            <x-input-label for="jabatan_id" :value="__('Jabatan')" />
+            <select id="jabatan_id" name="jabatan_id" class="block mt-1 w-full dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                @foreach(\App\Models\Jabatan::all() as $jabatan)
+                    <option value="{{ $jabatan->id_jabatan }}">{{ $jabatan->nama_jabatan }}</option>
+                @endforeach
+            </select>
+            <x-input-error :messages="$errors->get('jabatan_id')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
@@ -44,7 +51,7 @@
                 {{ __('Already registered?') }}
             </a>
 
-            <x-primary-button class="ms-4">
+            <x-primary-button class="ml-4">
                 {{ __('Register') }}
             </x-primary-button>
         </div>
