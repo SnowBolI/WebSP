@@ -1,23 +1,24 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PegawaiKepalaCabang extends Model
 {
-    use HasFactory;
-
-    protected $primaryKey = 'id_kepala_cabang';
+    protected $table = 'pegawai_kepala_cabangs'; // Sesuaikan dengan nama tabel yang sesuai
+    protected $primaryKey = 'id_kepala_cabang'; // Atur primary key jika perlu
 
     protected $fillable = [
-        'user_id',
-        // tambahkan kolom lain jika diperlukan
+        'id_kepala_cabang',
+        'nama_kepala_cabang',
+        'id_jabatan',
+        'id_cabang',
+        'id_direksi',
+        'email',
+        'password',
+        // tambahkan atribut tambahan jika diperlukan
     ];
 
-    // Relasi dengan tabel users
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // Tambahkan relasi atau metode lain jika diperlukan
 }

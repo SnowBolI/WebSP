@@ -1,25 +1,25 @@
 <?php
-// PegawaiAccountOffice.php
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PegawaiAccountOffice extends Model
+class AccountOffice extends Model
 {
-    use HasFactory;
-
-    protected $primaryKey = 'id_account_office';
+    protected $table = 'account_offices'; // Sesuaikan dengan nama tabel yang sesuai
+    protected $primaryKey = 'id_account_officer'; // Atur primary key jika perlu
 
     protected $fillable = [
-        'user_id',
-        // tambahkan kolom lain jika diperlukan
+        'id_account_officer',
+        'nama_account_officer',
+        'id_admin_kas',
+        'id_jabatan',
+        'id_cabang',
+        'id_wilayah',
+        'email',
+        'password',
+        // tambahkan atribut tambahan jika diperlukan
     ];
 
-    // Relasi dengan tabel users
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // Tambahkan relasi atau metode lain jika diperlukan
 }

@@ -1,24 +1,21 @@
 <?php
 
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Direksi extends Model
 {
-    use HasFactory;
-
-    protected $primaryKey = 'id_direksi';
+    protected $table = 'direksis'; // Sesuaikan dengan nama tabel yang sesuai
+    protected $primaryKey = 'id_direksi'; // Atur primary key jika perlu
 
     protected $fillable = [
-        'user_id',
+        'id_direksi',
+        'nama',
+        'email',
+        'password',
+        // tambahkan atribut tambahan jika diperlukan
     ];
 
-    // Relasi dengan tabel users
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // Tambahkan relasi atau metode lain jika diperlukan
 }
