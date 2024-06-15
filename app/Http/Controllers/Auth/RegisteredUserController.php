@@ -100,7 +100,7 @@ class RegisteredUserController extends Controller
             ]);
             break;
         case 5: // Pegawai Account Office
-            AccountOffice::create([
+            PegawaiAccountOffice::create([
                 'nama_account_officer' => $request->name, // Contoh penggunaan nama untuk Account Office
                 'id_jabatan' => $request->jabatan_id,
                 // tambahkan data spesifik untuk jabatan account office jika diperlukan
