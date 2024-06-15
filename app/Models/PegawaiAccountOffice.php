@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AccountOffice extends Model
+class PegawaiAccountOffice extends Model
 {
     protected $table = 'account_offices'; // Sesuaikan dengan nama tabel yang sesuai
     protected $primaryKey = 'id_account_officer'; // Atur primary key jika perlu
