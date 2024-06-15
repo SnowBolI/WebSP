@@ -82,27 +82,46 @@ class RegisteredUserController extends Controller
             PegawaiKepalaCabang::create([
                 'nama_kepala_cabang' => $request->name, // Contoh penggunaan nama untuk Kepala Cabang
                 'id_jabatan' => $request->jabatan_id,
+                'id_cabang' => $request->id_cabang,
+                'id_direksi' => $request->id_direksi,
+                'email' => $request->email,
+                'password' => $request->password
                 // tambahkan data spesifik untuk jabatan kepala cabang jika diperlukan
             ]);
             break;
         case 3: // Pegawai Admin Kas
             PegawaiAdminKas::create([
                 'nama_admin_kas' => $request->name, // Contoh penggunaan nama untuk Admin Kas
+                'id_supervisor' =>$request->id_supervisor,
                 'id_jabatan' => $request->jabatan_id,
+                'id_cabang' => $request->id_cabang,
+                'id_wilayah' => $request->id_wilayah,
+                'email' => $request->email,
+                'password' => $request->password
                 // tambahkan data spesifik untuk jabatan admin kas jika diperlukan
             ]);
             break;
         case 4: // Pegawai Supervisor
             PegawaiSupervisor::create([
                 'nama_supervisor' => $request->name, // Contoh penggunaan nama untuk Supervisor
+                'id_kepala_cabang' => $request->id_kepala_cabang,
                 'id_jabatan' => $request->jabatan_id,
+                'id_cabang' => $request->id_cabang,
+                'id_wilayah' => $request->id_wilayah,
+                'email' => $request->email,
+                'password' => $request->password
                 // tambahkan data spesifik untuk jabatan supervisor jika diperlukan
             ]);
             break;
         case 5: // Pegawai Account Office
             PegawaiAccountOffice::create([
                 'nama_account_officer' => $request->name, // Contoh penggunaan nama untuk Account Office
+                'id_admin_kas' => $request->id_admin_kas,
                 'id_jabatan' => $request->jabatan_id,
+                'id_cabang' => $request->id_cabang,
+                'id_wilayah' => $request->id_wilayah,
+                'email' => $request->email,
+                'password' => $request->password
                 // tambahkan data spesifik untuk jabatan account office jika diperlukan
             ]);
             break;
