@@ -28,8 +28,11 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return view('auth.register');
+        $cabangs = \App\Models\Cabang::all(); // Mengambil semua cabang dari model Cabang
+
+        return view('auth.register', compact('cabangs'));
     }
+
 
     /**
      * Handle an incoming registration request.
