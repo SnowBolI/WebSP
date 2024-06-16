@@ -18,13 +18,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class RegisteredUserController extends Controller
 {
     /**
-     * Disp lay the registration view.
+     * Display the registration view.
      *
      * @return \Illuminate\View\View
      */
@@ -45,116 +43,114 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-{
-    // Validasi data input
-    $validator = Validator::make($request->all(), [
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'jabatan_id' => ['required', 'integer', 'between:1,5'], // Validasi jabatan_id antara 1 hingga 5
-        'cropped_image' => ['required'], // Validasi gambar yang di-crop
-    ]);
+    {
+        // Debug: Log request data
+        \Log::info('Request Data:', $request->all());
 
-    if ($validator->fails()) {
-        return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
-    }
+        // Common validation rules
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'jabatan_id' => ['required', 'integer', 'between:1,5'], // Validasi jabatan_id antara 1 hingga 5
+        ];
 
-    // Mengelola upload gambar yang di-crop
-    $profilePicturePath = null;
-    if ($request->has('cropped_image')) {
-        $image = $request->get('cropped_image');
-        $image = str_replace('data:image/png;base64,', '', $image);
-        $image = str_replace(' ', '+', $image);
-        $imageName = Str::random(10).'.png';
-        Storage::disk('public')->put('profile_pictures/' . $imageName, base64_decode($image));
-        $profilePicturePath = 'profile_pictures/' . $imageName;
-    }
+        // Add specific validation rules based on jabatan_id
+        switch ($request->jabatan_id) {
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                $rules['id_cabang'] = ['required', 'integer'];
+                break;
+        }
 
-    // Membuat pengguna baru
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'jabatan_id' => $request->jabatan_id,
-        'profile_picture' => $profilePicturePath, // Simpan path gambar di database
-    ]);
+        // Validate input data
+        $validator = Validator::make($request->all(), $rules);
 
-    // Memastikan user berhasil dibuat
-    if (!$user) {
-        throw ValidationException::withMessages(['error' => 'Failed to create user']);
-    }
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
 
-    // Menyimpan data spesifik berdasarkan jabatan
-    switch ($request->jabatan_id) {
-        case 1: // Direksi
-            Direksi::create([
-                'nama' => $request->name, // Contoh penggunaan nama untuk Direksi
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                // tambahkan data spesifik untuk jabatan direksi jika diperlukan
-            ]);
-            break;
-        case 2: // Pegawai Kepala Cabang
-            PegawaiKepalaCabang::create([
-                'nama_kepala_cabang' => $request->name, // Contoh penggunaan nama untuk Kepala Cabang
-                'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->cabang_id,
-                'id_direksi' => $request->id_direksi,
-                'email' => $request->email,
-                'password' => $request->password
-                // tambahkan data spesifik untuk jabatan kepala cabang jika diperlukan
-            ]);
-            break;
-        case 3: // Pegawai Admin Kas
-            PegawaiAdminKas::create([
-                'nama_admin_kas' => $request->name, // Contoh penggunaan nama untuk Admin Kas
-                'id_supervisor' => $request->id_supervisor,
-                'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->cabang_id,
-                'id_wilayah' => $request->id_wilayah,
-                'email' => $request->email,
-                'password' => $request->password
-                // tambahkan data spesifik untuk jabatan admin kas jika diperlukan
-            ]);
-            break;
-        case 4: // Pegawai Supervisor
-            PegawaiSupervisor::create([
-                'nama_supervisor' => $request->name, // Contoh penggunaan nama untuk Supervisor
-                'id_kepala_cabang' => $request->id_kepala_cabang,
-                'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->cabang_id,
-                'id_wilayah' => $request->id_wilayah,
-                'email' => $request->email,
-                'password' => $request->password
-                // tambahkan data spesifik untuk jabatan supervisor jika diperlukan
-            ]);
-            break;
-        case 5: // Pegawai Account Office
-            PegawaiAccountOffice::create([
-                'nama_account_officer' => $request->name, // Contoh penggunaan nama untuk Account Office
-                'id_admin_kas' => $request->id_admin_kas,
-                'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->cabang_id,
-                'id_wilayah' => $request->id_wilayah,
-                'email' => $request->email,
-                'password' => $request->password
-                // tambahkan data spesifik untuk jabatan account office jika diperlukan
-            ]);
-            break;
-        default:
-            // do nothing or handle default case
-            break;
-    }
+        // Create new user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'jabatan_id' => $request->jabatan_id,
+        ]);
 
-    // Event registered user
-    event(new Registered($user));
+        if (!$user) {
+            throw ValidationException::withMessages(['error' => 'Failed to create user']);
+        }
 
-    // Autentikasi user
-    Auth::login($user);
+        // Save specific data based on jabatan_id
+        switch ($request->jabatan_id) {
+            case 1: // Direksi
+                Direksi::create([
+                    'nama' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                break;
+            case 2: // Pegawai Kepala Cabang
+                // Get id_direksi from the Direksi table
+                $direksi = Direksi::first(); // Adjust this to your specific requirements
+                PegawaiKepalaCabang::create([
+                    'nama_kepala_cabang' => $request->name,
+                    'id_jabatan' => $request->jabatan_id,
+                    'id_cabang' => $request->id_cabang,
+                    'id_direksi' => $direksi ? $direksi->id_direksi : null,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                break;
+            case 3: // Pegawai Admin Kas
+                PegawaiAdminKas::create([
+                    'nama_admin_kas' => $request->name,
+                    'id_supervisor' => $request->id_supervisor,
+                    'id_jabatan' => $request->jabatan_id,
+                    'id_cabang' => $request->id_cabang,
+                    'id_wilayah' => $request->id_wilayah,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                break;
+            case 4: // Pegawai Supervisor
+                PegawaiSupervisor::create([
+                    'nama_supervisor' => $request->name,
+                    'id_kepala_cabang' => $request->id_kepala_cabang,
+                    'id_jabatan' => $request->jabatan_id,
+                    'id_cabang' => $request->id_cabang,
+                    'id_wilayah' => $request->id_wilayah,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                break;
+            case 5: // Pegawai Account Office
+                PegawaiAccountOffice::create([
+                    'nama_account_officer' => $request->name,
+                    'id_admin_kas' => $request->id_admin_kas,
+                    'id_jabatan' => $request->jabatan_id,
+                    'id_cabang' => $request->id_cabang,
+                    'id_wilayah' => $request->id_wilayah,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                break;
+            default:
+                break;
+        }
 
-    // Redirect home
-    return redirect(RouteServiceProvider::HOME);
+        // Event registered user
+        event(new Registered($user));
+
+        // Autentikasi user
+        Auth::login($user);
+
+        // Redirect home
+        return redirect(RouteServiceProvider::HOME);
     }
 }
