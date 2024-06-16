@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class RegisteredUserController extends Controller
 {
@@ -50,6 +52,7 @@ class RegisteredUserController extends Controller
         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
         'jabatan_id' => ['required', 'integer', 'between:1,5'], // Validasi jabatan_id antara 1 hingga 5
+        'cropped_image' => ['required'], // Validasi gambar yang di-crop
     ]);
 
     if ($validator->fails()) {
@@ -58,12 +61,24 @@ class RegisteredUserController extends Controller
                     ->withInput();
     }
 
+    // Mengelola upload gambar yang di-crop
+    $profilePicturePath = null;
+    if ($request->has('cropped_image')) {
+        $image = $request->get('cropped_image');
+        $image = str_replace('data:image/png;base64,', '', $image);
+        $image = str_replace(' ', '+', $image);
+        $imageName = Str::random(10).'.png';
+        Storage::disk('public')->put('profile_pictures/' . $imageName, base64_decode($image));
+        $profilePicturePath = 'profile_pictures/' . $imageName;
+    }
+
     // Membuat pengguna baru
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
         'jabatan_id' => $request->jabatan_id,
+        'profile_picture' => $profilePicturePath, // Simpan path gambar di database
     ]);
 
     // Memastikan user berhasil dibuat
@@ -85,7 +100,7 @@ class RegisteredUserController extends Controller
             PegawaiKepalaCabang::create([
                 'nama_kepala_cabang' => $request->name, // Contoh penggunaan nama untuk Kepala Cabang
                 'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->id_cabang,
+                'id_cabang' => $request->cabang_id,
                 'id_direksi' => $request->id_direksi,
                 'email' => $request->email,
                 'password' => $request->password
@@ -95,9 +110,9 @@ class RegisteredUserController extends Controller
         case 3: // Pegawai Admin Kas
             PegawaiAdminKas::create([
                 'nama_admin_kas' => $request->name, // Contoh penggunaan nama untuk Admin Kas
-                'id_supervisor' =>$request->id_supervisor,
+                'id_supervisor' => $request->id_supervisor,
                 'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->id_cabang,
+                'id_cabang' => $request->cabang_id,
                 'id_wilayah' => $request->id_wilayah,
                 'email' => $request->email,
                 'password' => $request->password
@@ -109,7 +124,7 @@ class RegisteredUserController extends Controller
                 'nama_supervisor' => $request->name, // Contoh penggunaan nama untuk Supervisor
                 'id_kepala_cabang' => $request->id_kepala_cabang,
                 'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->id_cabang,
+                'id_cabang' => $request->cabang_id,
                 'id_wilayah' => $request->id_wilayah,
                 'email' => $request->email,
                 'password' => $request->password
@@ -121,7 +136,7 @@ class RegisteredUserController extends Controller
                 'nama_account_officer' => $request->name, // Contoh penggunaan nama untuk Account Office
                 'id_admin_kas' => $request->id_admin_kas,
                 'id_jabatan' => $request->jabatan_id,
-                'id_cabang' => $request->id_cabang,
+                'id_cabang' => $request->cabang_id,
                 'id_wilayah' => $request->id_wilayah,
                 'email' => $request->email,
                 'password' => $request->password
