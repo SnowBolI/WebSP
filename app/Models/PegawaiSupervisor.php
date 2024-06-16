@@ -9,6 +9,12 @@ class PegawaiSupervisor extends Model
     protected $table = 'pegawai_supervisors'; // Sesuaikan dengan nama tabel yang sesuai
     protected $primaryKey = 'id_supervisor'; // Atur primary key jika perlu
 
+
+    public function wilayah()
+    {
+        return $this->belongsTo(CabangWilayah::class, 'id_cabang', 'id_cabang');
+    }
+
     protected $fillable = [
         'id_supervisor',
         'nama_supervisor',

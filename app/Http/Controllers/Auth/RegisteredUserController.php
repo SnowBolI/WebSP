@@ -8,6 +8,7 @@ use App\Models\PegawaiKepalaCabang;
 use App\Models\PegawaiAdminKas;
 use App\Models\PegawaiSupervisor;
 use App\Models\PegawaiAccountOffice;
+use App\Models\CabangWilayah; // Tambahkan model CabangWilayah
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -119,12 +120,15 @@ class RegisteredUserController extends Controller
                 ]);
                 break;
             case 4: // Pegawai Supervisor
+                $kepalacabang = PegawaiKepalaCabang::first();
+                $cabangWilayah = CabangWilayah::where('id_cabang', $request->id_cabang)->first();
+                $id_wilayah = $cabangWilayah ? $cabangWilayah->id_wilayah : null;
                 PegawaiSupervisor::create([
                     'nama_supervisor' => $request->name,
-                    'id_kepala_cabang' => $request->id_kepala_cabang,
+                    'id_kepala_cabang' => $kepalacabang ? $kepalacabang->id_kepala_cabang : null,
                     'id_jabatan' => $request->jabatan_id,
                     'id_cabang' => $request->id_cabang,
-                    'id_wilayah' => $request->id_wilayah,
+                    'id_wilayah' => $id_wilayah,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
