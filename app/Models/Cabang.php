@@ -17,5 +17,9 @@ class Cabang extends Model
     // Tidak ada timestamps di default
     public $timestamps = false;
 
-    // Tambahkan relasi atau metode lain jika diperlukan
+    // Relasi many-to-many dengan model Wilayah
+    public function wilayahs()
+    {
+        return $this->belongsToMany(Wilayah::class, 'cabang_wilayah', 'id_cabang', 'id_wilayah');
+    }
 }
