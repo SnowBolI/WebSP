@@ -90,7 +90,9 @@ class RegisteredUserController extends Controller
         // Save specific data based on jabatan_id
         switch ($request->jabatan_id) {
             case 1: // Direksi
+                $user = User::first(); // Adjust this to your specific requirements
                 Direksi::create([
+                    'id_user' => $user ? $user->id_user : null,
                     'nama' => $request->name,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
@@ -98,8 +100,10 @@ class RegisteredUserController extends Controller
                 break;
             case 2: // Pegawai Kepala Cabang
                 // Get id_direksi from the Direksi table
+                $user = User::first();
                 $direksi = Direksi::first(); // Adjust this to your specific requirements
                 PegawaiKepalaCabang::create([
+                    'id_user' => $user ? $user->id_user : null,
                     'nama_kepala_cabang' => $request->name,
                     'id_jabatan' => $request->jabatan_id,
                     'id_cabang' => $request->id_cabang,
@@ -109,7 +113,9 @@ class RegisteredUserController extends Controller
                 ]);
                 break;
             case 3: // Pegawai Admin Kas
+                $user = User::first();
                 PegawaiAdminKas::create([
+                    'id_user' => $user ? $user->id_user : null,
                     'nama_admin_kas' => $request->name,
                     'id_supervisor' => $request->id_supervisor,
                     'id_jabatan' => $request->jabatan_id,
@@ -120,10 +126,12 @@ class RegisteredUserController extends Controller
                 ]);
                 break;
             case 4: // Pegawai Supervisor
+                $user = User::first();
                 $kepalacabang = PegawaiKepalaCabang::first();
                 $cabangWilayah = CabangWilayah::where('id_cabang', $request->id_cabang)->first();
                 $id_wilayah = $cabangWilayah ? $cabangWilayah->id_wilayah : null;
                 PegawaiSupervisor::create([
+                    'id_user' => $user ? $user->id_user : null,
                     'nama_supervisor' => $request->name,
                     'id_kepala_cabang' => $kepalacabang ? $kepalacabang->id_kepala_cabang : null,
                     'id_jabatan' => $request->jabatan_id,
@@ -134,7 +142,9 @@ class RegisteredUserController extends Controller
                 ]);
                 break;
             case 5: // Pegawai Account Office
+                $user = User::first();
                 PegawaiAccountOffice::create([
+                    'id_user' => $user ? $user->id_user : null,
                     'nama_account_officer' => $request->name,
                     'id_admin_kas' => $request->id_admin_kas,
                     'id_jabatan' => $request->jabatan_id,

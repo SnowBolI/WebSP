@@ -10,6 +10,7 @@ class Direksi extends Model
     protected $primaryKey = 'id_direksi'; // Atur primary key jika perlu
 
     protected $fillable = [
+        'id_user',
         'id_direksi',
         'nama',
         'email',

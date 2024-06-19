@@ -15,7 +15,6 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
-
             <x-text-input id="password" class="block mt-1 w-full"
                           type="password"
                           name="password"
@@ -34,9 +33,9 @@
 
         <div class="flex flex-col items-center justify-end mt-4">
             <x-primary-button class="w-full py-2 px-4 bg-red-500 text-white text-center font-bold rounded hover:bg-red-700">
-            <span style="margin:auto">
-            {{ __('Log in') }}
-            </span>   
+                <span style="margin:auto">
+                    {{ __('Log in') }}
+                </span>
             </x-primary-button>
 
             <div class="flex justify-between w-full mt-4">

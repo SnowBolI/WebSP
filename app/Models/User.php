@@ -12,6 +12,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $primaryKey = 'id_user';
     public function jabatan()
 {
     return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id_jabatan');
