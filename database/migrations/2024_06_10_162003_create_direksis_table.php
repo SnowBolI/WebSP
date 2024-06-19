@@ -14,10 +14,13 @@ return new class extends Migration
         Schema::create('direksis', function (Blueprint $table) 
             {
                 $table->bigIncrements('id_direksi');
+                $table->unsignedBigInteger('id_user');
                 $table->string('nama');
                 $table->string('email')->unique();
                 $table->string('password');
                 $table->timestamps();
+
+                $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
             });
     }
 
