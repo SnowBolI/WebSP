@@ -15,9 +15,9 @@ class JabatanSeeder extends Seeder
         DB::table('jabatans')->insert([
             ['nama_jabatan' => 'Direksi'],
             ['nama_jabatan' => 'Kepala Cabang'],
+            ['nama_jabatan' => 'Supervisor'],
             ['nama_jabatan' => 'Admin Kas'],
             ['nama_jabatan' => 'Account Officer'],
-            ['nama_jabatan' => 'Supervisor'],
         ]);
     }
 }

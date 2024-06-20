@@ -112,20 +112,7 @@ class RegisteredUserController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
                 break;
-            case 3: // Pegawai Admin Kas
-                
-                PegawaiAdminKas::create([
-                    'id_user' => $user ? $user->id_user : null,
-                    'nama_admin_kas' => $request->name,
-                    'id_supervisor' => $request->id_supervisor,
-                    'id_jabatan' => $request->jabatan_id,
-                    'id_cabang' => $request->id_cabang,
-                    'id_wilayah' => $request->id_wilayah,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                ]);
-                break;
-            case 4: // Pegawai Supervisor
+            case 3: // Pegawai Supervisor
                 
                 $kepalacabang = PegawaiKepalaCabang::first();
                 $cabangWilayah = CabangWilayah::where('id_cabang', $request->id_cabang)->first();
@@ -141,11 +128,26 @@ class RegisteredUserController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
                 break;
+            case 4: // Pegawai Admin Kas
+                
+                PegawaiAdminKas::create([
+                    'id_user' => $user ? $user->id_user : null,
+                    'nama_admin_kas' => $request->name,
+                    'id_supervisor' => $request->id_supervisor,
+                    'id_jabatan' => $request->jabatan_id,
+                    'id_cabang' => $request->id_cabang,
+                    'id_wilayah' => $request->id_wilayah,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                break;
+            
             case 5: // Pegawai Account Office
                 
                 PegawaiAccountOffice::create([
                     'id_user' => $user ? $user->id_user : null,
                     'nama_account_officer' => $request->name,
+                    'id_admin_kas' => $request->id_admin_kas,
                     'id_jabatan' => $request->jabatan_id,
                     'id_cabang' => $request->id_cabang,
                     'id_wilayah' => $request->id_wilayah,
