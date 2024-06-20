@@ -12,13 +12,14 @@ class PegawaiSupervisor extends Model
 
     public function wilayah()
     {
-        return $this->belongsTo(CabangWilayah::class, 'id_cabang', 'id_cabang');
+        return $this->belongsTo(CabangWilayah::class, 'id_cabang', 'id_wilayah');
     }
 
     protected $fillable = [
         'id_supervisor',
         'nama_supervisor',
         'id_kepala_cabang',
+        'id_user',
         'id_jabatan',
         'id_cabang',
         'id_wilayah',

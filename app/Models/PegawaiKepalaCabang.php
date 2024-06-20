@@ -12,6 +12,7 @@ class PegawaiKepalaCabang extends Model
     protected $fillable = [
         'id_kepala_cabang',
         'nama_kepala_cabang',
+        'id_user',
         'id_jabatan',
         'id_cabang',
         'id_direksi',

@@ -12,6 +12,7 @@ class PegawaiAdminKas extends Model
     protected $fillable = [
         'id_admin_kas',
         'nama_admin_kas',
+        'id_user',
         'id_supervisor',
         'id_jabatan',
         'id_cabang',
