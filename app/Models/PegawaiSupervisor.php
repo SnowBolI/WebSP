@@ -21,7 +21,7 @@ class PegawaiSupervisor extends Model
         'id_kepala_cabang',
         'id_user',
         'id_jabatan',
-        'id_cabang',
+        'cabang',
         'id_wilayah',
         'email',
         'password',

@@ -15,7 +15,7 @@ class PegawaiAdminKas extends Model
         'id_user',
         'id_supervisor',
         'id_jabatan',
-        'id_cabang',
+        'cabang',
         'id_wilayah',
         'email',
         'password',

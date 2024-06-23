@@ -8,7 +8,7 @@ use App\Models\PegawaiKepalaCabang;
 use App\Models\PegawaiAdminKas;
 use App\Models\PegawaiSupervisor;
 use App\Models\PegawaiAccountOffice;
-use App\Models\CabangWilayah; // Tambahkan model CabangWilayah
+use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,135 +22,146 @@ use Illuminate\Routing\Controller;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
+    public function index(Request $request)
     {
-        $cabangs = \App\Models\Cabang::all(); // Mengambil semua cabang dari model Cabang
-
-        return view('auth.register', compact('cabangs'));
+        return $request->user();
     }
 
-
-    /**
-     * Handle an incoming registration request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+    public function register(Request $request)
     {
-        // Debug: Log request data
-        \Log::info('Request Data:', $request->all());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'jabatan_id' => 'required|integer|between:1,5',
+            'cabang' => 'required_if:jabatan_id,2,3,4,5|string|max:128',
+        ]);
 
-        // Common validation rules
-        $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'jabatan_id' => ['required', 'integer', 'between:1,5'], // Validasi jabatan_id antara 1 hingga 5
-        ];
-
-        // Add specific validation rules based on jabatan_id
-        switch ($request->jabatan_id) {
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                $rules['id_cabang'] = ['required', 'integer'];
-                break;
-        }
-
-        // Validate input data
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                        ->withErrors($validator)
-                        ->withInput();
-        }
-
-        // Create new user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'jabatan_id' => $request->jabatan_id,
+            'cabang' => $request->cabang,
         ]);
 
-        if (!$user) {
-            throw ValidationException::withMessages(['error' => 'Failed to create user']);
+        event(new Registered($user));
+        Auth::login($user);
+        return redirect(RouteServiceProvider::HOME);
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $token = md5(time() . '.' . md5($request->email));
+            $user->forceFill(['api_token' => $token])->save();
+            return response()->json(['token' => $token]);
         }
 
-        // Save specific data based on jabatan_id
+        return response()->json(['message' => 'The provided credentials do not match our records.'], 401);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->forceFill(['api_token' => null])->save();
+        return response()->json(['message' => 'success']);
+    }
+
+    public function jabatan()
+    {
+        $jabatan = Jabatan::all();
+        return response()->json($jabatan);
+    }
+
+    public function create()
+    {
+        $users = User::select('cabang')->distinct()->get();
+        return view('auth.register', compact('users'));
+    }
+
+    public function store(Request $request): RedirectResponse
+{
+    \Log::info('Request Data:', $request->all());
+
+    $rules = [
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        'jabatan_id' => ['required', 'integer', 'between:1,5'],
+        'cabang' => ['required_if:jabatan_id,2,3,4,5', 'nullable', 'string'],
+    ];
+
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    try {
+        // Set cabang to null if jabatan_id is 1 (Direksi)
+        $cabang = $request->jabatan_id == 1 ? null : $request->cabang;
+
+        // Create the user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'jabatan_id' => $request->jabatan_id,
+            'cabang' => $cabang,
+        ]);
+
+        // Create specific role entry
         switch ($request->jabatan_id) {
             case 1: // Direksi
-                 // Adjust this to your specific requirements
                 Direksi::create([
-                    'id_user' => $user ? $user->id_user : null,
+                    'id_user' => $user->id,
                     'nama' => $request->name,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
+                    'cabang' => null, // Explicitly set cabang to null
                 ]);
                 break;
             case 2: // Pegawai Kepala Cabang
-                // Get id_direksi from the Direksi table
-                
-                $direksi = Direksi::first(); // Adjust this to your specific requirements
                 PegawaiKepalaCabang::create([
-                    'id_user' => $user ? $user->id_user : null,
+                    'id_user' => $user->id,
                     'nama_kepala_cabang' => $request->name,
                     'id_jabatan' => $request->jabatan_id,
-                    'id_cabang' => $request->id_cabang,
-                    'id_direksi' => $request ? $direksi->id_direksi : null,
+                    'cabang' => $request->cabang,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
                 break;
             case 3: // Pegawai Supervisor
-                
-                $kepalacabang = PegawaiKepalaCabang::first();
-                $cabangWilayah = CabangWilayah::where('id_cabang', $request->id_cabang)->first();
-                $id_wilayah = $cabangWilayah ? $cabangWilayah->id_wilayah : null;
                 PegawaiSupervisor::create([
-                    'id_user' => $user ? $user->id_user : null,
+                    'id_user' => $user->id,
                     'nama_supervisor' => $request->name,
-                    'id_kepala_cabang' => $kepalacabang ? $kepalacabang->id_kepala_cabang : null,
                     'id_jabatan' => $request->jabatan_id,
-                    'id_cabang' => $request->id_cabang,
-                    'id_wilayah' => $id_wilayah,
+                    'cabang' => $request->cabang,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
                 break;
             case 4: // Pegawai Admin Kas
-                
                 PegawaiAdminKas::create([
-                    'id_user' => $user ? $user->id_user : null,
+                    'id_user' => $user->id,
                     'nama_admin_kas' => $request->name,
-                    'id_supervisor' => $request->id_supervisor,
                     'id_jabatan' => $request->jabatan_id,
-                    'id_cabang' => $request->id_cabang,
-                    'id_wilayah' => $request->id_wilayah,
+                    'cabang' => $request->cabang,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
                 break;
-            
             case 5: // Pegawai Account Office
-                
                 PegawaiAccountOffice::create([
-                    'id_user' => $user ? $user->id_user : null,
+                    'id_user' => $user->id,
                     'nama_account_officer' => $request->name,
-                    'id_admin_kas' => $request->id_admin_kas,
                     'id_jabatan' => $request->jabatan_id,
-                    'id_cabang' => $request->id_cabang,
-                    'id_wilayah' => $request->id_wilayah,
+                    'cabang' => $request->cabang,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
@@ -159,13 +170,13 @@ class RegisteredUserController extends Controller
                 break;
         }
 
-        // Event registered user
         event(new Registered($user));
-
-        // Autentikasi user
         Auth::login($user);
 
-        // Redirect home
         return redirect(RouteServiceProvider::HOME);
+    } catch (\Exception $e) {
+        \Log::error('Error creating user: ' . $e->getMessage(), ['exception' => $e]);
+        return redirect()->back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()])->withInput();
     }
+}
 }

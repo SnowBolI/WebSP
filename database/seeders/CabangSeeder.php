@@ -12,13 +12,13 @@ class CabangSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('cabangs')->insert([
-            ['nama_cabang' => 'ind'],
-            ['nama_cabang' => 'vss'],
-            ['nama_cabang' => 'jpn'],
-            ['nama_cabang' => 'mal'],
-            ['nama_cabang' => 'gny'],
-            ['nama_cabang' => 'tar'],
+        DB::table('users')->insert([
+            ['cabang' => 'Magetan'],
+            ['cabang' => 'Madioen'],
+            ['cabang' => 'Karangrejo'],
+            ['cabang' => 'Karas'],
+            ['cabang' => 'Madiun'],
+            ['cabang' => 'Ohio'],
         ]);
     }
 }

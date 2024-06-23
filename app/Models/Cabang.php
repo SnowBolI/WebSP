@@ -18,8 +18,8 @@ class Cabang extends Model
     public $timestamps = false;
 
     // Relasi many-to-many dengan model Wilayah
-    public function wilayahs()
-    {
-        return $this->belongsToMany(Wilayah::class, 'cabang_wilayah', 'id_cabang', 'id_wilayah');
-    }
+    // public function wilayahs()
+    // {
+
+    // }
 }

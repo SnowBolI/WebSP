@@ -22,14 +22,13 @@ return new class extends Migration
             $table->text('keterangan');
             $table->datetime('ttd');
             $table->datetime('kembali');
-            $table->unsignedBigInteger('id_cabang');
-            $table->unsignedBigInteger('id_wilayah');
+            $table->string('cabang', 128)->references('cabang')->on('users');
             $table->unsignedBigInteger('id_account_officer');
+            $table->unsignedBigInteger('id_kepala_cabang');
             $table->unsignedBigInteger('id_admin_kas');
             $table->timestamps();
 
-            $table->foreign('id_cabang')->references('id_cabang')->on('cabangs')->onDelete('cascade');
-            $table->foreign('id_wilayah')->references('id_wilayah')->on('wilayahs')->onDelete('cascade');
+            $table->foreign('id_kepala_cabang')->references('id_kepala_cabang')->on('pegawai_kepala_cabangs')->onDelete('cascade');
             $table->foreign('id_account_officer')->references('id_account_officer')->on('pegawai_account_offices')->onDelete('cascade');
             $table->foreign('id_admin_kas')->references('id_admin_kas')->on('pegawai_admin_kas')->onDelete('cascade');
         });
