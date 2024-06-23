@@ -19,19 +19,14 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
@@ -48,13 +43,15 @@
 
         <!-- Form untuk Pemilihan Cabang -->
         <div id="form-cabang" class="mt-4" style="display: none;">
-            <x-input-label for="id_cabang" :value="__('Cabang')" />
-            <select id="id_cabang" name="id_cabang" class="block mt-1 w-full dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                @foreach($cabangs as $cabang)
-                    <option value="{{ $cabang->id_cabang }}">{{ $cabang->nama_cabang }}</option>
-                @endforeach
+            <x-input-label for="cabang" :value="__('Cabang')" />
+            <select id="cabang" name="cabang" class="block mt-1 w-full dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                <option value="Magetan">Magetan</option>
+                <option value="Madiun">Madiun</option>
+                <option value="Karas">Karas</option>
+                <option value="Karangrejo">Karangrejo</option>
+                <option value="Pelem">Pelem</option>
             </select>
-            <x-input-error :messages="$errors->get('id_cabang')" class="mt-2" />
+            <x-input-error :messages="$errors->get('cabang')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
@@ -73,21 +70,15 @@
         $(document).ready(function() {
             $('#jabatan_id').change(function() {
                 var jabatanId = $(this).val();
-                // Sembunyikan form cabang dan direksi terlebih dahulu
                 $('#form-cabang').hide();
-                $('#form-direksi').hide();
-                // Tampilkan form cabang dan direksi jika jabatan yang dipilih memerlukan pemilihan cabang dan direksi
                 if (jabatanId == 2 || jabatanId == 3 || jabatanId == 4 || jabatanId == 5) {
                     $('#form-cabang').show();
-                    $('#form-direksi').show();
                 }
             });
 
-            // Periksa jabatan saat halaman dimuat ulang
             var currentJabatanId = $('#jabatan_id').val();
             if (currentJabatanId == 2 || currentJabatanId == 3 || currentJabatanId == 4 || currentJabatanId == 5) {
                 $('#form-cabang').show();
-                $('#form-direksi').show();
             }
         });
     </script>
