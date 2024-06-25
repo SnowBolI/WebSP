@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('nasabahs', function (Blueprint $table) {
             $table->unsignedBigInteger('no')->primary();
             $table->string('nama');
-            $table->string('pokok');
-            $table->string('bunga');
-            $table->string('denda');
-            $table->integer('total');
+            $table->decimal('pokok', 15, 2);
+            $table->decimal('bunga', 15, 2);
+            $table->decimal('denda', 15, 2);
+            $table->decimal('total', 15, 2);
             $table->string('account_officer');
             $table->text('keterangan');
-            $table->datetime('ttd');
+            $table->string('ttd');
             $table->datetime('kembali');
             $table->unsignedBigInteger('id_cabang');
             $table->unsignedBigInteger('id_wilayah');
