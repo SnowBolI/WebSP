@@ -15,7 +15,7 @@ class PegawaiAccountOffice extends Model
         'id_user',
         'id_admin_kas',
         'id_jabatan',
-        'cabang',
+        'id_cabang',
         'id_wilayah',
         'email',
         'password',
