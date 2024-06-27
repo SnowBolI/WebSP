@@ -15,10 +15,9 @@ class NasabahController extends Controller
 
     public function create()
     {
-        return view('dashboard');
+        return view('nasabah.create'); // Create a new view for creating Nasabah
     }
 
-    // Store a newly created resource in storage
     public function store(Request $request)
     {
         $request->validate([
@@ -37,25 +36,30 @@ class NasabahController extends Controller
             'id_admin_kas' => 'required|numeric',
         ]);
 
-        // Create new Nasabah
-        Nasabah::create($request->all());
+        $nasabah = new Nasabah($request->except('bukti'));
+
+        if ($request->hasFile('bukti')) {
+            $file = $request->file('bukti');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $nasabah->bukti = $filename;
+        }
+
+        $nasabah->save();
 
         return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil ditambahkan.');
     }
 
-    // Display the specified resource
     public function show(Nasabah $nasabah)
     {
-        return view('dashboard', compact('nasabah'));
+        return view('nasabah.show', compact('nasabah')); // Create a new view for showing a single Nasabah
     }
 
-    // Show the form for editing the specified resource
     public function edit(Nasabah $nasabah)
     {
-        return view('dashboard', compact('nasabah'));
+        return view('nasabah.edit', compact('nasabah')); // Create a new view for editing Nasabah
     }
 
-    // Update the specified resource in storage
     public function update(Request $request, Nasabah $nasabah)
     {
         $request->validate([
@@ -74,13 +78,20 @@ class NasabahController extends Controller
             'id_admin_kas' => 'required|numeric',
         ]);
 
-        // Update Nasabah
-        $nasabah->update($request->all());
+        $nasabah->fill($request->except('bukti'));
+
+        if ($request->hasFile('bukti')) {
+            $file = $request->file('bukti');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $nasabah->bukti = $filename;
+        }
+
+        $nasabah->save();
 
         return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil diperbarui.');
     }
 
-    // Remove the specified resource from storage
     public function destroy(Nasabah $nasabah)
     {
         $nasabah->delete();
@@ -88,4 +99,3 @@ class NasabahController extends Controller
         return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil dihapus.');
     }
 }
-
