@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama_supervisor');
 
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_kepala_cabang');
+            $table->unsignedBigInteger('id_kepala_cabang')->nullable();
             $table->unsignedBigInteger('id_jabatan');
             $table->unsignedBigInteger('id_cabang');
             $table->unsignedBigInteger('id_wilayah');

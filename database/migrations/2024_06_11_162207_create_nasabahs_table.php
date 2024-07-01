@@ -24,7 +24,7 @@ return new class extends Migration
             $table->datetime('kembali');
             $table->unsignedBigInteger('id_cabang');
             $table->unsignedBigInteger('id_wilayah');
-            $table->unsignedBigInteger('id_account_officer');
+            $table->unsignedBigInteger('id_account_officer')->nullable( );
             $table->unsignedBigInteger('id_admin_kas');
             $table->timestamps();
 

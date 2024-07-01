@@ -16,19 +16,17 @@ return new class extends Migration
             $table->string('nama_admin_kas');
 
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_supervisor');
+            $table->unsignedBigInteger('id_supervisor')->nullable();
             $table->unsignedBigInteger('id_jabatan');
             $table->unsignedBigInteger('id_cabang');
-            $table->unsignedBigInteger('id_wilayah');
+            $table->unsignedBigInteger('id_wilayah')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->timestamps();
             
-            $table->foreign('id_supervisor')->references('id_supervisor')->on('pegawai_supervisors')->onDelete('cascade');
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
             $table->foreign('id_jabatan')->references('id_jabatan')->on('jabatans')->onDelete('cascade');
             $table->foreign('id_cabang')->references('id_cabang')->on('cabangs')->onDelete('cascade');
-            $table->foreign('id_wilayah')->references('id_wilayah')->on('wilayahs')->onDelete('cascade');
         });
     }
 

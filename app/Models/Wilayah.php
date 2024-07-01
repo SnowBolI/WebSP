@@ -19,6 +19,6 @@ class Wilayah extends Model
     // Relasi many-to-many dengan model Cabang
     public function cabangs()
     {
-        return $this->belongsToMany(Cabang::class, 'cabang_wilayah', 'id_wilayah', 'id_wilayah');
+        return $this->belongsToMany(Cabang::class, 'cabang_wilayahs', 'id_wilayah', 'id_wilayah');
     }
 }

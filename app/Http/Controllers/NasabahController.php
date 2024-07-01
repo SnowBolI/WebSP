@@ -15,12 +15,15 @@ class NasabahController extends Controller
 
     public function create()
     {
-        return view('nasabah.create'); // Create a new view for creating Nasabah
+        return view('nasabah.create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        \Log::info('Store Method Called');
+
+        // Validasi input
+        $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'pokok' => 'required|numeric',
             'bunga' => 'required|numeric',
@@ -29,40 +32,44 @@ class NasabahController extends Controller
             'account_officer' => 'required|string|max:255',
             'keterangan' => 'nullable|string|max:255',
             'ttd' => 'nullable|string|max:255',
-            'kembali' => 'nullable|string|max:255',
+            'kembali' => 'nullable|date',
             'id_cabang' => 'required|numeric',
             'bukti' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'id_wilayah' => 'required|numeric',
             'id_admin_kas' => 'required|numeric',
         ]);
 
-        $nasabah = new Nasabah($request->except('bukti'));
+        \Log::info('Validated Data: ', $validatedData);
 
+        // Handle file upload for 'bukti'
         if ($request->hasFile('bukti')) {
             $file = $request->file('bukti');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads'), $filename);
-            $nasabah->bukti = $filename;
+            $fileName = time().'_'.$file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads', $fileName, 'public');
+            $validatedData['bukti'] = '/storage/' . $filePath;
         }
 
-        $nasabah->save();
+        // Buat instance baru dari model Nasabah
+        $nasabah = Nasabah::create($validatedData);
+        \Log::info('Nasabah Created: ', $nasabah->toArray());
 
-        return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil ditambahkan.');
+        // Redirect atau response yang sesuai setelah penyimpanan berhasil
+        return redirect()->route('dashboard')->with('success', 'Nasabah berhasil ditambahkan');
     }
 
     public function show(Nasabah $nasabah)
     {
-        return view('nasabah.show', compact('nasabah')); // Create a new view for showing a single Nasabah
+        return view('nasabah.show', compact('nasabah'));
     }
 
     public function edit(Nasabah $nasabah)
     {
-        return view('nasabah.edit', compact('nasabah')); // Create a new view for editing Nasabah
+        return view('nasabah.edit', compact('nasabah'));
     }
 
     public function update(Request $request, Nasabah $nasabah)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'pokok' => 'required|numeric',
             'bunga' => 'required|numeric',
@@ -71,24 +78,23 @@ class NasabahController extends Controller
             'account_officer' => 'required|string|max:255',
             'keterangan' => 'nullable|string|max:255',
             'ttd' => 'nullable|string|max:255',
-            'kembali' => 'nullable|string|max:255',
+            'kembali' => 'nullable|date',
             'id_cabang' => 'required|numeric',
             'bukti' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'id_wilayah' => 'required|numeric',
             'id_admin_kas' => 'required|numeric',
         ]);
 
-        $nasabah->fill($request->except('bukti'));
+        $nasabah->fill($validatedData);
 
         if ($request->hasFile('bukti')) {
             $file = $request->file('bukti');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads'), $filename);
-            $nasabah->bukti = $filename;
+            $fileName = time().'_'.$file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads', $fileName, 'public');
+            $nasabah->bukti = '/storage/' . $filePath;
         }
 
         $nasabah->save();
-
         return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil diperbarui.');
     }
 
