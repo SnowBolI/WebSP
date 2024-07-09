@@ -21,9 +21,13 @@
                         <div class="flex items-center justify-center min-h-screen">
                             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-2xl">
                                 <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Tambah Data Nasabah</h2>
-                                <form method="POST" action="{{ route('nasabahs.store') }}">
+                                <form method="POST" action="{{ route('nasabahs.store') }}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-200">No</label>
+                                            <input type="text" name="no" id="no" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                        </div>
                                         <div>
                                             <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nama</label>
                                             <input type="text" name="nama" id="nama" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
@@ -58,7 +62,7 @@
                                         </div>
                                         <div>
                                             <label for="kembali" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Kembali</label>
-                                            <input type="text" name="kembali" id="kembali" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <input type="date" name="kembali" id="kembali" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
                                         </div>
                                         <div>
                                             <label for="id_cabang" class="block text-sm font-medium text-gray-700 dark:text-gray-200">ID Cabang</label>
@@ -106,7 +110,7 @@
                                     <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Kembali</th>
                                     <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">ID Cabang</th>
                                     <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Bukti (Gambar)</th>
-                                    <th class="w-24 px-2                                 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">ID Admin Kas</th>
+                                    <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">ID Admin Kas</th>
                                 <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Created At</th>
                                 <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Updated At</th>
                                 <th class="w-16 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Aksi</th>
@@ -115,7 +119,7 @@
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                                 @foreach ($nasabahs as $nasabah)
                                 <tr>
-                                    <td class="px-2 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->no }}</td>
                                     <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->nama }}</td>
                                     <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->pokok }}</td>
                                     <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->bunga }}</td>
@@ -128,7 +132,7 @@
                                     <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->id_cabang }}</td>
                                     <td class="px-2 py-4 whitespace-nowrap">
                                         @if ($nasabah->bukti)
-                                        <img src="{{ asset('storage/' . $nasabah->bukti) }}" alt="Bukti" class="w-16 h-16">
+                                        <img src="{{ asset('bukti_sp/' . $nasabah->bukti) }}" alt="Bukti" class="w-16 h-16">
                                         @endif
                                     </td>
                                     <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->id_admin_kas }}</td>
@@ -160,4 +164,4 @@
     </script>
 
 </x-app-layout>
-
+{{ dd($errors) }}

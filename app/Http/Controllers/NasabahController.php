@@ -9,7 +9,7 @@ class NasabahController extends Controller
 {
     public function index()
     {
-        $nasabahs = Nasabah::all();
+        $nasabahs = Nasabah::paginate(10);
         return view('dashboard', ['nasabahs' => $nasabahs]);
     }
 
@@ -20,41 +20,54 @@ class NasabahController extends Controller
 
     public function store(Request $request)
     {
-        \Log::info('Store Method Called');
-
-        // Validasi input
-        $validatedData = $request->validate([
-            'nama' => 'required|string|max:255',
+        $request->validate([
+            'no' => 'required',
+            'nama' => 'required',
             'pokok' => 'required|numeric',
             'bunga' => 'required|numeric',
             'denda' => 'required|numeric',
             'total' => 'required|numeric',
-            'account_officer' => 'required|string|max:255',
-            'keterangan' => 'nullable|string|max:255',
-            'ttd' => 'nullable|string|max:255',
-            'kembali' => 'nullable|date',
+            'account_officer' => 'required',
+            'keterangan' => 'required',
+            'ttd' => 'required',
+            'kembali' => 'required',
             'id_cabang' => 'required|numeric',
-            'bukti' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'bukti' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'id_wilayah' => 'required|numeric',
             'id_admin_kas' => 'required|numeric',
         ]);
 
-        \Log::info('Validated Data: ', $validatedData);
+        $nasabah = new Nasabah([
+            'no' => $request->get('no'),
+            'nama' => $request->get('nama'),
+            'pokok' => $request->get('pokok'),
+            'bunga' => $request->get('bunga'),
+            'denda' => $request->get('denda'),
+            'total' => $request->get('total'),
+            'account_officer' => $request->get('account_officer'),
+            'keterangan' => $request->get('keterangan'),
+            'ttd' => $request->get('ttd'),
+            'kembali' => $request->get('kembali'),
+            'id_cabang' => $request->get('id_cabang'),
+            'id_wilayah' => $request->get('id_wilayah'),
+            'id_admin_kas' => $request->get('id_admin_kas')
+        ]);
 
-        // Handle file upload for 'bukti'
         if ($request->hasFile('bukti')) {
             $file = $request->file('bukti');
-            $fileName = time().'_'.$file->getClientOriginalName();
-            $filePath = $file->storeAs('uploads', $fileName, 'public');
-            $validatedData['bukti'] = '/storage/' . $filePath;
+            $filename = time() . '_' . $file->getClientOriginalName(); // Menambahkan timestamp untuk mencegah bentrok nama file
+            $filePath = $file->storeAs('public/storage/bukti_sp', $filename); // Menyimpan file ke dalam storage/bukti_sp
+            $nasabah->bukti = $filePath; // Menyimpan path file relatif ke database
+        } else {
+            dd('File not received');
         }
+        
+        
 
-        // Buat instance baru dari model Nasabah
-        $nasabah = Nasabah::create($validatedData);
-        \Log::info('Nasabah Created: ', $nasabah->toArray());
 
-        // Redirect atau response yang sesuai setelah penyimpanan berhasil
-        return redirect()->route('dashboard')->with('success', 'Nasabah berhasil ditambahkan');
+        $nasabah->save();
+
+        return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil ditambahkan');
     }
 
     public function show(Nasabah $nasabah)
@@ -89,12 +102,13 @@ class NasabahController extends Controller
 
         if ($request->hasFile('bukti')) {
             $file = $request->file('bukti');
-            $fileName = time().'_'.$file->getClientOriginalName();
+            $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('uploads', $fileName, 'public');
             $nasabah->bukti = '/storage/' . $filePath;
         }
 
         $nasabah->save();
+
         return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil diperbarui.');
     }
 

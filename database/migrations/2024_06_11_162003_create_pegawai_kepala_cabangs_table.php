@@ -16,9 +16,8 @@ return new class extends Migration
             $table->string('nama_kepala_cabang');
             // Tambahkan kolom-kolom tambahan sesuai kebutuhan
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_jabatan');
             $table->unsignedBigInteger('id_cabang');
-            $table->unsignedBigInteger('id_direksi');
+            $table->unsignedBigInteger('id_direksi')->nullable();
    
             $table->string('email')->unique();
             $table->string('password');
@@ -26,7 +25,6 @@ return new class extends Migration
 
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
             $table->foreign('id_direksi')->references('id_direksi')->on('direksis')->onDelete('cascade');
-            $table->foreign('id_jabatan')->references('id_jabatan')->on('jabatans')->onDelete('cascade');
             $table->foreign('id_cabang')->references('id_cabang')->on('cabangs')->onDelete('cascade');
           
         });

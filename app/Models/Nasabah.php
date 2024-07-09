@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Nasabah extends Model
 {
-    protected $table = 'nasabahs';
+    // Specify the primary key
+    protected $primaryKey = 'no';
+
+    // Disable auto-incrementing
+    public $incrementing = false;
+
+    // Specify the data type of the primary key
+    protected $keyType = 'integer';  // or 'integer' if the 'no' is integer
 
     protected $fillable = [
         'no',
@@ -20,8 +27,8 @@ class Nasabah extends Model
         'ttd',
         'kembali',
         'id_cabang',
+        'bukti',
         'id_wilayah',
-        'id_account_officer',
         'id_admin_kas',
     ];
 }

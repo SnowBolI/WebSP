@@ -24,8 +24,9 @@ return new class extends Migration
             $table->datetime('kembali');
             $table->unsignedBigInteger('id_cabang');
             $table->unsignedBigInteger('id_wilayah');
-            $table->unsignedBigInteger('id_account_officer')->nullable( );
+            $table->unsignedBigInteger('id_account_officer')->nullable();
             $table->unsignedBigInteger('id_admin_kas');
+            $table->string('bukti')->nullable();
             $table->timestamps();
 
             $table->foreign('id_cabang')->references('id_cabang')->on('cabangs')->onDelete('cascade');
@@ -34,7 +35,6 @@ return new class extends Migration
             $table->foreign('id_admin_kas')->references('id_admin_kas')->on('pegawai_admin_kas')->onDelete('cascade');
         });
     }
-
 
     /**
      * Reverse the migrations.
