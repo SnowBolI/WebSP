@@ -21,7 +21,7 @@ class NasabahController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'no' => 'required',
+            // 'no' => 'required',
             'nama' => 'required',
             'pokok' => 'required|numeric',
             'bunga' => 'required|numeric',
@@ -32,13 +32,13 @@ class NasabahController extends Controller
             'ttd' => 'required',
             'kembali' => 'required',
             'id_cabang' => 'required|numeric',
-            'bukti' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'bukti' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'id_wilayah' => 'required|numeric',
-            'id_admin_kas' => 'required|numeric',
+            // 'id_admin_kas' => 'required|numeric',
         ]);
 
         $nasabah = new Nasabah([
-            'no' => $request->get('no'),
+            // 'no' => $request->get('no'),
             'nama' => $request->get('nama'),
             'pokok' => $request->get('pokok'),
             'bunga' => $request->get('bunga'),
@@ -50,17 +50,17 @@ class NasabahController extends Controller
             'kembali' => $request->get('kembali'),
             'id_cabang' => $request->get('id_cabang'),
             'id_wilayah' => $request->get('id_wilayah'),
-            'id_admin_kas' => $request->get('id_admin_kas')
+            // 'id_admin_kas' => $request->get('id_admin_kas')
         ]);
 
-        if ($request->hasFile('bukti')) {
-            $file = $request->file('bukti');
-            $filename = time() . '_' . $file->getClientOriginalName(); // Menambahkan timestamp untuk mencegah bentrok nama file
-            $filePath = $file->storeAs('public/storage/bukti_sp', $filename); // Menyimpan file ke dalam storage/bukti_sp
-            $nasabah->bukti = $filePath; // Menyimpan path file relatif ke database
-        } else {
-            dd('File not received');
-        }
+        // if ($request->hasFile('bukti')) {
+        //     $file = $request->file('bukti');
+        //     $filename = time() . '_' . $file->getClientOriginalName(); // Menambahkan timestamp untuk mencegah bentrok nama file
+        //     $filePath = $file->storeAs('public/storage/bukti_sp', $filename); // Menyimpan file ke dalam storage/bukti_sp
+        //     $nasabah->bukti = $filePath; // Menyimpan path file relatif ke database
+        // } else {
+        //     dd('File not received');
+        // }
         
         
 

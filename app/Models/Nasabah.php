@@ -16,7 +16,7 @@ class Nasabah extends Model
     protected $keyType = 'integer';  // or 'integer' if the 'no' is integer
 
     protected $fillable = [
-        'no',
+        // 'no',
         'nama',
         'pokok',
         'bunga',

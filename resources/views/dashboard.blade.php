@@ -24,10 +24,10 @@
                                 <form method="POST" action="{{ route('nasabahs.store') }}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="grid grid-cols-2 gap-4">
-                                        <div>
+                                        <!-- <div>
                                             <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-200">No</label>
                                             <input type="text" name="no" id="no" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nama</label>
                                             <input type="text" name="nama" id="nama" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
@@ -139,9 +139,7 @@
                                     <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->created_at }}</td>
                                     <td class="px-2 py-4 whitespace-nowrap">{{ $nasabah->updated_at }}</td>
                                     <td class="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('nasabahs.edit', $nasabah->id) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
-                                        <form action="{{ route('nasabahs.destroy', $nasabah->id) }}" method="POST" class="inline-block">
-                                            @csrf
+                                        @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
                                         </form>
