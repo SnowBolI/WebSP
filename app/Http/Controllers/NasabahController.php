@@ -34,7 +34,7 @@ class NasabahController extends Controller
             'id_cabang' => 'required|numeric',
             'bukti' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'id_wilayah' => 'required|numeric',
-            // 'id_admin_kas' => 'required|numeric',
+            'id_admin_kas' => 'nullable|numeric',
         ]);
 
         $nasabah = new Nasabah([
@@ -50,7 +50,7 @@ class NasabahController extends Controller
             'kembali' => $request->get('kembali'),
             'id_cabang' => $request->get('id_cabang'),
             'id_wilayah' => $request->get('id_wilayah'),
-            // 'id_admin_kas' => $request->get('id_admin_kas')
+            'id_admin_kas' => $request->get('id_admin_kas')
         ]);
 
         // if ($request->hasFile('bukti')) {
@@ -95,17 +95,16 @@ class NasabahController extends Controller
             'id_cabang' => 'required|numeric',
             'bukti' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'id_wilayah' => 'required|numeric',
-            'id_admin_kas' => 'required|numeric',
+            'id_admin_kas' => 'nullable|numeric',
         ]);
 
         $nasabah->fill($validatedData);
-
-        if ($request->hasFile('bukti')) {
-            $file = $request->file('bukti');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('uploads', $fileName, 'public');
-            $nasabah->bukti = '/storage/' . $filePath;
-        }
+        // if ($request->hasFile('bukti')) {
+        //     $file = $request->file('bukti');
+        //     $fileName = time() . '_' . $file->getClientOriginalName();
+        //     $filePath = $file->storeAs('uploads', $fileName, 'public');
+        //     $nasabah->bukti = '/storage/' . $filePath;
+        // }
 
         $nasabah->save();
 
@@ -116,6 +115,6 @@ class NasabahController extends Controller
     {
         $nasabah->delete();
 
-        return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil dihapus.');
+        return redirect()->route('nasabahs.index')->with('success', 'Data nasabah berhasil dihapus.');
     }
 }

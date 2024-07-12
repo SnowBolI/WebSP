@@ -25,7 +25,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_cabang');
             $table->unsignedBigInteger('id_wilayah');
             $table->unsignedBigInteger('id_account_officer')->nullable();
-            $table->unsignedBigInteger('id_admin_kas');
+            $table->unsignedBigInteger('id_admin_kas')->nullable();
             $table->string('bukti')->nullable();
             $table->timestamps();
 

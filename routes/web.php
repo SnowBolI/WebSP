@@ -18,7 +18,7 @@ Route::get('/register', [RegisteredUserController::class, 'create'])->name('regi
 Route::post('/register', [RegisteredUserController::class, 'store']);
 
 Route::get('/', function () {
-    return view('/login');
+    return view('auth.login');
 });
 
 // Redirect /dashboard to the NasabahController's index method
