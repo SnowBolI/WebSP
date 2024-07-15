@@ -3,20 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nasabah;
+use App\Models\Cabang;
+use App\Models\Wilayah;
 use Illuminate\Http\Request;
 
 class NasabahController extends Controller
 {
     public function index()
     {
-        $nasabahs = Nasabah::paginate(10);
+        $nasabahs = Nasabah::with(['cabang', 'wilayah'])->paginate(10);
         return view('dashboard', ['nasabahs' => $nasabahs]);
     }
 
     public function create()
-    {
-        return view('nasabah.create');
-    }
+{
+    $cabangs = Cabang::all();
+    $wilayahs = Wilayah::all();
+    dd($cabangs, $wilayahs); // Debug statement to check data
+    return view('nasabah.create', compact('cabangs', 'wilayahs'));
+}
 
     public function store(Request $request)
     {
@@ -61,12 +66,7 @@ class NasabahController extends Controller
         // } else {
         //     dd('File not received');
         // }
-        
-        
-
-
         $nasabah->save();
-
         return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil ditambahkan');
     }
 
@@ -76,9 +76,12 @@ class NasabahController extends Controller
     }
 
     public function edit(Nasabah $nasabah)
-    {
-        return view('nasabah.edit', compact('nasabah'));
-    }
+{
+    $cabangs = Cabang::all();
+    $wilayahs = Wilayah::all();
+    dd($cabangs, $wilayahs, $nasabah); // Debug statement to check data
+    return view('nasabah.edit', compact('nasabah', 'cabangs', 'wilayahs'));
+}
 
     public function update(Request $request, Nasabah $nasabah)
     {
@@ -107,7 +110,6 @@ class NasabahController extends Controller
         // }
 
         $nasabah->save();
-
         return redirect()->route('dashboard')->with('success', 'Data nasabah berhasil diperbarui.');
     }
 
