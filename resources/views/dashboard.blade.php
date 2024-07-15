@@ -20,10 +20,10 @@
                     <div id="modal" class="fixed z-10 inset-0 overflow-y-auto hidden">
                         <div class="flex items-center justify-center min-h-screen">
                             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-2xl">
-                                <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Tambah Data Nasabah</h2>
-                                <form method="POST" action="" enctype="multipart/form-data" id="nasabah-form">
+                                <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100" id="modal-title">Tambah Data Nasabah</h2>
+                                <form method="POST" action="{{ route('nasabahs.store') }}" enctype="multipart/form-data" id="nasabah-form">
                                     @csrf
-                                    <input type="hidden" name="_method" id="method">
+                                    <input type="hidden" name="_method" value="POST"> <!-- For method spoofing -->
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nama</label>
@@ -31,19 +31,19 @@
                                         </div>
                                         <div>
                                             <label for="pokok" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Pokok</label>
-                                            <input type="number" name="pokok" id="pokok" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <input type="number" name="pokok" id="pokok" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" oninput="calculateTotal()">
                                         </div>
                                         <div>
                                             <label for="bunga" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Bunga</label>
-                                            <input type="number" name="bunga" id="bunga" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <input type="number" name="bunga" id="bunga" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" oninput="calculateTotal()">
                                         </div>
                                         <div>
                                             <label for="denda" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Denda</label>
-                                            <input type="number" name="denda" id="denda" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <input type="number" name="denda" id="denda" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" oninput="calculateTotal()">
                                         </div>
                                         <div>
                                             <label for="total" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Total</label>
-                                            <input type="number" name="total" id="total" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <input type="number" name="total" id="total" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" readonly>
                                         </div>
                                         <div>
                                             <label for="account_officer" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Account Officer</label>
@@ -105,83 +105,95 @@
                                     <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">ID Cabang</th>
                                     <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Bukti (Gambar)</th>
                                     <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">ID Wilayah</th>
-                                    <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Aksi</th>
+                                    <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Dibuat Pada</th>
+                                    <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Diperbarui Pada</th>
+                                    <th class="relative w-16 px-2 py-3"><span class="sr-only">Edit</span></th>
+                                    <th class="relative w-16 px-2 py-3"><span class="sr-only">Hapus</span></th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                                 @foreach ($nasabahs as $nasabah)
-                                <tr>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $loop->iteration }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->nama }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->pokok }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->bunga }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->denda }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->total }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->account_officer }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->keterangan }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->ttd }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->kembali }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->id_cabang }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200"><img src="{{ $nasabah->bukti }}" alt="Bukti" class="h-10 w-10"></td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{{ $nasabah->id_wilayah }}</td>
-                                    <td class="px-2 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button onclick="editNasabah({{ json_encode($nasabah) }})" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-100">Edit</button>
-                                        <form method="POST" action="{{ route('nasabahs.destroy', $nasabah->no) }}" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" onclick="return confirm('Are you sure?')" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-100">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->no }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->nama }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->pokok }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->bunga }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->denda }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->total }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->account_officer }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->keterangan }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->ttd }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->kembali }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->id_cabang }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
+                                            @if ($nasabah->bukti)
+                                                <img src="{{ asset('storage/' . $nasabah->bukti) }}" alt="Bukti Gambar" class="w-16 h-16 object-cover">
+                                            @else
+                                                Tidak Ada Gambar
+                                            @endif
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->id_wilayah }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->created_at }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->updated_at }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button onclick="toggleModal('edit', {{ $nasabah }})" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <form action="{{ route('nasabahs.destroy', $nasabah->no) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">
-                        {{ $nasabahs->links() }}
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function toggleModal(action = '') {
+        function toggleModal(action, nasabah = null) {
             const modal = document.getElementById('modal');
             const form = document.getElementById('nasabah-form');
-            const methodInput = document.getElementById('method');
+            const modalTitle = document.getElementById('modal-title');
 
             if (action === 'add') {
                 form.action = "{{ route('nasabahs.store') }}";
-                methodInput.value = 'POST';
-                form.reset(); // Clear form data
+                form.querySelector('[name="_method"]').value = 'POST';
+                modalTitle.innerText = 'Tambah Data Nasabah';
+                form.reset();
+            } else if (action === 'edit') {
+                form.action = `{{ url('nasabahs') }}/${nasabah.no}`;
+                form.querySelector('[name="_method"]').value = 'PUT';
+                modalTitle.innerText = 'Edit Data Nasabah';
+
+                form.querySelector('[name="nama"]').value = nasabah.nama;
+                form.querySelector('[name="pokok"]').value = nasabah.pokok;
+                form.querySelector('[name="bunga"]').value = nasabah.bunga;
+                form.querySelector('[name="denda"]').value = nasabah.denda;
+                form.querySelector('[name="total"]').value = nasabah.total;
+                form.querySelector('[name="account_officer"]').value = nasabah.account_officer;
+                form.querySelector('[name="keterangan"]').value = nasabah.keterangan;
+                form.querySelector('[name="ttd"]').value = nasabah.ttd;
+                form.querySelector('[name="kembali"]').value = nasabah.kembali;
+                form.querySelector('[name="id_cabang"]').value = nasabah.id_cabang;
+                form.querySelector('[name="id_wilayah"]').value = nasabah.id_wilayah;
             }
 
             modal.classList.toggle('hidden');
         }
 
-        function editNasabah(nasabah) {
-            const modal = document.getElementById('modal');
-            const form = document.getElementById('nasabah-form');
-            const methodInput = document.getElementById('method');
-
-            form.action = "/nasabahs/" + nasabah.no;
-            methodInput.value = 'PUT';
-
-            document.getElementById('nama').value = nasabah.nama;
-            document.getElementById('pokok').value = nasabah.pokok;
-            document.getElementById('bunga').value = nasabah.bunga;
-            document.getElementById('denda').value = nasabah.denda;
-            document.getElementById('total').value = nasabah.total;
-            document.getElementById('account_officer').value = nasabah.account_officer;
-            document.getElementById('keterangan').value = nasabah.keterangan;
-            document.getElementById('ttd').value = nasabah.ttd;
-            document.getElementById('kembali').value = nasabah.kembali;
-            document.getElementById('id_cabang').value = nasabah.id_cabang;
-            document.getElementById('id_wilayah').value = nasabah.id_wilayah;
-            // bukti field is not filled as it's a file input
-
-            modal.classList.toggle('hidden');
+        function calculateTotal() {
+            const pokok = parseFloat(document.getElementById('pokok').value) || 0;
+            const bunga = parseFloat(document.getElementById('bunga').value) || 0;
+            const denda = parseFloat(document.getElementById('denda').value) || 0;
+            const total = pokok + bunga + denda;
+            document.getElementById('total').value = total;
         }
     </script>
 </x-app-layout>
