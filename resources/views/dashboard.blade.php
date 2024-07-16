@@ -62,16 +62,24 @@
                                             <input type="date" name="kembali" id="kembali" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
                                         </div>
                                         <div>
-                                            <label for="id_cabang" class="block text-sm font-medium text-gray-700 dark:text-gray-200">ID Cabang</label>
-                                            <input type="number" name="id_cabang" id="id_cabang" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <label for="id_cabang" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Cabang</label>
+                                            <select name="id_cabang" id="id_cabang" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                                @foreach ($cabangs as $cabang)
+                                                    <option value="{{ $cabang->id_cabang }}">{{ $cabang->nama_cabang }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                         <div>
                                             <label for="bukti" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Bukti (Gambar)</label>
                                             <input type="file" name="bukti" id="bukti" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
                                         </div>
                                         <div>
-                                            <label for="id_wilayah" class="block text-sm font-medium text-gray-700 dark:text-gray-200">ID Wilayah</label>
-                                            <input type="number" name="id_wilayah" id="id_wilayah" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <label for="id_wilayah" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Wilayah</label>
+                                            <select name="id_wilayah" id="id_wilayah" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                                @foreach ($wilayahs as $wilayah)
+                                                    <option value="{{ $wilayah->id_wilayah }}">{{ $wilayah->nama_wilayah }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="mt-4 flex justify-end">
@@ -102,9 +110,9 @@
                                     <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Keterangan</th>
                                     <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">TTD</th>
                                     <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Kembali</th>
-                                    <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">ID Cabang</th>
+                                    <th class="w-24 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Nama Cabang</th>
                                     <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Bukti (Gambar)</th>
-                                    <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">ID Wilayah</th>
+                                    <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Nama Wilayah</th>
                                     <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Dibuat Pada</th>
                                     <th class="w-32 px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Diperbarui Pada</th>
                                     <th class="relative w-16 px-2 py-3"><span class="sr-only">Edit</span></th>
@@ -124,16 +132,14 @@
                                         <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->keterangan }}</td>
                                         <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->ttd }}</td>
                                         <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->kembali }}</td>
-                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->id_cabang }}</td>
-                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->cabang->nama_cabang }}</td>                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
                                             @if ($nasabah->bukti)
                                                 <img src="{{ asset('storage/' . $nasabah->bukti) }}" alt="Bukti Gambar" class="w-16 h-16 object-cover">
                                             @else
                                                 Tidak Ada Gambar
                                             @endif
                                         </td>
-                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->id_wilayah }}</td>
-                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->created_at }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->wilayah->nama_wilayah }}</td>                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->created_at }}</td>
                                         <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->updated_at }}</td>
                                         <td class="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <button onclick="toggleModal('edit', {{ $nasabah }})" class="text-indigo-600 hover:text-indigo-900">Edit</button>
