@@ -21,4 +21,8 @@ class Wilayah extends Model
     {
         return $this->belongsToMany(Cabang::class, 'cabang_wilayahs', 'id_wilayah', 'id_wilayah');
     }
+    public function nasabahs()
+    {
+    return $this->hasMany(Nasabah::class, 'id_wilayah');
+    }
 }

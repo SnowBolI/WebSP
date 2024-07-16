@@ -12,21 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('nasabahs', function (Blueprint $table) {
-            $table->unsignedBigInteger('no')->autoIncrement();
+            $table->unsignedBigInteger('no')->primary();
             $table->string('nama');
-            $table->decimal('pokok', 15, 2);
-            $table->decimal('bunga', 15, 2);
-            $table->decimal('denda', 15, 2);
-            $table->decimal('total', 15, 2);
+            $table->integer('pokok');
+            $table->integer('bunga');
+            $table->integer('denda');
+            $table->integer('total');
             $table->string('account_officer');
             $table->text('keterangan');
-            $table->string('ttd');
+            $table->datetime('ttd');
             $table->datetime('kembali');
             $table->unsignedBigInteger('id_cabang');
             $table->unsignedBigInteger('id_wilayah');
             $table->unsignedBigInteger('id_account_officer')->nullable();
             $table->unsignedBigInteger('id_admin_kas')->nullable();
-            $table->string('bukti')->nullable();
             $table->timestamps();
 
             $table->foreign('id_cabang')->references('id_cabang')->on('cabangs')->onDelete('cascade');

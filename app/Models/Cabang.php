@@ -22,4 +22,9 @@ class Cabang extends Model
     {
         return $this->belongsToMany(Wilayah::class, 'cabang_wilayahs', 'id_cabang', 'id_wilayah');
     }
+        public function nasabahs()
+    {
+        return $this->hasMany(Nasabah::class, 'id_cabang');
+    }
+
 }

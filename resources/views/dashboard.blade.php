@@ -26,6 +26,10 @@
                                     <input type="hidden" name="_method" value="POST"> <!-- For method spoofing -->
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
+                                            <label for="no" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nomor</label>
+                                            <input type="text" name="no" id="no" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                        </div>
+                                        <div>
                                             <label for="nama" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nama</label>
                                             <input type="text" name="nama" id="nama" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
                                         </div>
@@ -55,7 +59,7 @@
                                         </div>
                                         <div>
                                             <label for="ttd" class="block text-sm font-medium text-gray-700 dark:text-gray-200">TTD</label>
-                                            <input type="text" name="ttd" id="ttd" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
+                                            <input type="date" name="ttd" id="ttd" class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200">
                                         </div>
                                         <div>
                                             <label for="kembali" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Kembali</label>
@@ -122,7 +126,7 @@
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                                 @foreach ($nasabahs as $nasabah)
                                     <tr>
-                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->no }}</td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->no}}</td>
                                         <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->nama }}</td>
                                         <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->pokok }}</td>
                                         <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{{ $nasabah->bunga }}</td>
@@ -178,6 +182,7 @@
                 form.querySelector('[name="_method"]').value = 'PUT';
                 modalTitle.innerText = 'Edit Data Nasabah';
 
+                form.querySelector('[name="no"]').value = nasabah.no;
                 form.querySelector('[name="nama"]').value = nasabah.nama;
                 form.querySelector('[name="pokok"]').value = nasabah.pokok;
                 form.querySelector('[name="bunga"]').value = nasabah.bunga;

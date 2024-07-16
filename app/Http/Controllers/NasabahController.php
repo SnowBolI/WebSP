@@ -10,10 +10,13 @@ use Illuminate\Http\Request;
 class NasabahController extends Controller
 {
     public function index()
-    {
-        $nasabahs = Nasabah::with(['cabang', 'wilayah'])->paginate(10);
-        return view('dashboard', ['nasabahs' => $nasabahs]);
-    }
+{
+    $nasabahs = Nasabah::with(['cabang', 'wilayah'])->paginate(10);
+    $cabangs = Cabang::all();
+    $wilayahs = Wilayah::all();
+
+    return view('dashboard', compact('nasabahs', 'cabangs', 'wilayahs'));
+}
 
     public function create()
 {
@@ -26,11 +29,11 @@ class NasabahController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'no' => 'required',
+            'no' => 'required|numeric',
             'nama' => 'required',
-            'pokok' => 'required|numeric',
-            'bunga' => 'required|numeric',
-            'denda' => 'required|numeric',
+            'pokok' => 'required|integer',
+            'bunga' => 'required|integer',
+            'denda' => 'required|integer',
             'total' => 'required|numeric',
             'account_officer' => 'required',
             'keterangan' => 'required',
@@ -43,7 +46,7 @@ class NasabahController extends Controller
         ]);
 
         $nasabah = new Nasabah([
-            // 'no' => $request->get('no'),
+            'no' => $request->get('no'),
             'nama' => $request->get('nama'),
             'pokok' => $request->get('pokok'),
             'bunga' => $request->get('bunga'),
@@ -86,6 +89,7 @@ class NasabahController extends Controller
     public function update(Request $request, Nasabah $nasabah)
     {
         $validatedData = $request->validate([
+            'no' => 'required|numeric',
             'nama' => 'required|string|max:255',
             'pokok' => 'required|numeric',
             'bunga' => 'required|numeric',
