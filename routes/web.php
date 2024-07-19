@@ -26,6 +26,8 @@ Route::get('/dashboard', [NasabahController::class, 'index'])->name('dashboard')
 
 // Resource routes for NasabahController
 Route::resource('nasabahs', NasabahController::class);
+Route::get('/nasabahs/search', [NasabahController::class, 'search'])->name('nasabahs.search');
+
 
 // Route for inserting data
 Route::post('/insert-data', [DataController::class, 'insertData'])->name('insert.data');

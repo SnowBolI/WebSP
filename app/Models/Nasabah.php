@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Nasabah extends Model
+
 {
-    // Specify the primary key
-    protected $primaryKey = 'no';
 
-    // Disable auto-incrementing
-    public $incrementing = false;
-
-    // Specify the data type of the primary key
-    protected $keyType = 'integer';  // or 'integer' if the 'no' is integer
-
+    protected $primaryKey = 'no';  // Set primary key ke kolom 'no'
+    public function getRouteKeyName()
+    {
+        return 'no';
+    }
+    use HasFactory;
     protected $fillable = [
-        // 'no',
+        'no',
         'nama',
         'pokok',
         'bunga',
@@ -29,6 +29,17 @@ class Nasabah extends Model
         'id_cabang',
         'bukti',
         'id_wilayah',
-        'id_admin_kas',
     ];
+
+        public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'id_cabang');
+    }
+
+    public function wilayah()
+    {
+        return $this->belongsTo(Wilayah::class, 'id_wilayah');
+    }
+
+    
 }
